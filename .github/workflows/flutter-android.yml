@@ -8,16 +8,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-      - name: Cache Flutter Android
-        id: cache-flutter-android
+      - id: flutter-action
+        uses: subosito/flutter-action@v2
+      - name: Cache Pub based on pubspec
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache/
+          key: ${{ runner.os }}-pub-${{ hashFiles('fed_kit_client/pubspec.yaml') }}
+      - name: Cache Flutter artifacts based on Flutter cache key
         uses: actions/cache@v3
         with:
           path: |
-            ~/.pub-cache/
             fed_kit_client/build/
             fed_kit_client/.dart_tool/
-          key: ${{ runner.os }}-flutter-android
+          key: ${{ runner.os }}-pub-${{ steps.flutter-action.outputs.CACHE-KEY }}-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-pub-${{ steps.flutter-action.outputs.CACHE-KEY }}
       - name: Install dependencies
         run: |
           cd fed_kit_client/
