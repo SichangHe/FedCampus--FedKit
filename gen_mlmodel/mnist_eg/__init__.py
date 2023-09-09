@@ -1,9 +1,8 @@
-import tensorflow as tf
+import keras as k
 from coremltools.models.neural_network import AdamParams, NeuralNetworkBuilder
 
 from .. import convert, nn_builder, save_builder, try_make_layers_updatable
 
-k = tf.keras
 in_shape = (28, 28, 1)
 n_classes = 10
 file_name = "mnist.mlmodel"

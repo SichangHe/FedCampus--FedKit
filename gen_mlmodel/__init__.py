@@ -1,11 +1,12 @@
 import coremltools as ct
 from coremltools.models import MLModel
 from coremltools.models.neural_network import NeuralNetworkBuilder
-from tensorflow import keras
+from keras import Model
+from coremltools.converters import keras
 
 
-def convert(model: keras.Model) -> MLModel:
-    return ct.convert(model)  # type: ignore
+def convert(model: Model) -> MLModel:
+    return keras.convert(model)  # type: ignore
 
 
 def nn_builder(mlmodel: MLModel) -> NeuralNetworkBuilder:
