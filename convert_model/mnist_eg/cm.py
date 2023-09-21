@@ -1,5 +1,6 @@
 from coremltools.models.neural_network import AdamParams, NeuralNetworkBuilder
 
+from .. import keras as k
 from ..coreml import (
     convert,
     nn_builder,
@@ -7,21 +8,24 @@ from ..coreml import (
     save_builder,
     try_make_layers_updatable,
 )
-from . import in_shape, mnist_model
+from . import in_shape, mnist_sequence, n_classes
 
 COREML_FILE = "mnist.mlmodel"
 
 
 def config_builder(builder: NeuralNetworkBuilder):
-    builder.set_categorical_cross_entropy_loss("lossLayer", input="Identity")
+    softmax_out_name = "SoftmaxLast_true"
+    builder.add_softmax("SoftmaxLast", "Identity", softmax_out_name)
+    builder.set_categorical_cross_entropy_loss("lossLayer", input=softmax_out_name)
     builder.set_adam_optimizer(AdamParams())
     max_epochs = 10
     builder.set_epochs(max_epochs, range(1, max_epochs + 1))
 
 
 def main():
-    model = mnist_model()
-    random_fit(model, in_shape)
+    model = k.Sequential(mnist_sequence())
+    model.compile(loss="mse") # Just to make it fit once.
+    random_fit(model, in_shape, (n_classes,))
     mlmodel = convert(model)
     builder = nn_builder(mlmodel)
     config_builder(builder)
