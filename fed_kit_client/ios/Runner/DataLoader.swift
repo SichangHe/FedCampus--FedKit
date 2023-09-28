@@ -13,8 +13,8 @@ import Foundation
 let appDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
 
 private let dataset = "MNIST"
-private let shapeData: [NSNumber] = [1, 28, 28, 1]
-private let lengthEntry = shapeData.reduce(1) { acc, value in
+private let kFeatureSize: [NSNumber] = [1, 7]
+private let lengthEntry = kFeatureSize.reduce(1) { acc, value in
     Int(truncating: value) * acc
 }
 
@@ -29,13 +29,11 @@ func trainBatchProvider(
     progressHandler: @escaping (Int) -> Void
 ) async throws -> MLBatchProvider {
     return try await prepareMLBatchProvider(
-        filePath: "\(dataDir)/MNIST_train.csv",
+        filePath: "\(dataDir)/p\(String(format: "%02d", partitionId))_train.csv",
         inputName: inputName,
         outputName: outputName,
         progressHandler: progressHandler
-    ) { index in
-        index / 6000 + 1 == partitionId
-    }
+    )
 }
 
 func testBatchProvider(
@@ -45,7 +43,7 @@ func testBatchProvider(
     progressHandler: @escaping (Int) -> Void
 ) async throws -> MLBatchProvider {
     return try await prepareMLBatchProvider(
-        filePath: "\(dataDir)/MNIST_test.csv",
+        filePath: "\(dataDir)/test.csv",
         inputName: inputName,
         outputName: outputName,
         progressHandler: progressHandler
@@ -121,16 +119,12 @@ private func prepareMLBatchProvider(
             let countNow = count
             group.addTask {
                 let splits = line.split(separator: ",")
-                let imageMultiArr = try! MLMultiArray(shape: shapeData, dataType: .float32)
+                let imageMultiArr = try! MLMultiArray(shape: kFeatureSize, dataType: .float32)
                 let outputMultiArr = try! MLMultiArray(shape: shapeTarget, dataType: .double)
                 for i in 0 ..< lengthEntry {
-                    imageMultiArr[i] = (Float(String(splits[i + 1]))! / normalization) as NSNumber
+                    imageMultiArr[i] = (Float(splits[i + 1])! / normalization) as NSNumber
                 }
-                if Int(String(splits[0]))! == 1 {
-                    outputMultiArr[0] = 1.0
-                } else {
-                    outputMultiArr[0] = 0.0
-                }
+                outputMultiArr[0] = Double(splits.last!)! as NSNumber
                 let imageValue = MLFeatureValue(multiArray: imageMultiArr)
                 let outputValue = MLFeatureValue(multiArray: outputMultiArr)
                 let dataPointFeatures: [String: MLFeatureValue] =

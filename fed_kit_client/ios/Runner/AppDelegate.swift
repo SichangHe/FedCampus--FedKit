@@ -149,7 +149,7 @@ let log = logger(String(describing: AppDelegate.self))
         let trainBatchProvider = try await trainBatchProvider(
             dataDir, partitionId, inputName: inputName, outputName: outputName
         ) { count in
-            if count % 1000 == 999 {
+            if count % 100 == 99 {
                 log.error("Prepared \(count) training data points.")
             }
         }
@@ -158,7 +158,7 @@ let log = logger(String(describing: AppDelegate.self))
         let testBatchProvider = try await testBatchProvider(
             dataDir, inputName: inputName, outputName: outputName
         ) { count in
-            if count % 1000 == 999 {
+            if count % 100 == 99 {
                 log.error("Prepared \(count) test data points.")
             }
         }
