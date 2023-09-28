@@ -2,13 +2,15 @@ from fed_kit import *
 
 tflite_file = "pmdata.tflite"
 coreml_file = "pmdata.mlmodel"
-name = "PMData_unified"
-tflite_layers = [14336, 2048, 1048576, 2048, 2048, 4]
+name = "PMData_unified_more"
+tflite_layers = [14336, 2048, 1048576, 2048, 131072, 256, 256, 4]
 coreml_layers = [
     {"name": "sequential/dense/BiasAdd", "type": "weights", "updatable": True},
     {"name": "sequential/dense/BiasAdd", "type": "bias", "updatable": True},
     {"name": "sequential/dense_1/BiasAdd", "type": "weights", "updatable": True},
     {"name": "sequential/dense_1/BiasAdd", "type": "bias", "updatable": True},
+    {"name": "sequential/dense_2/BiasAdd", "type": "weights", "updatable": True},
+    {"name": "sequential/dense_2/BiasAdd", "type": "bias", "updatable": True},
     {"name": "Identity", "type": "weights", "updatable": True},
     {"name": "Identity", "type": "bias", "updatable": True},
 ]

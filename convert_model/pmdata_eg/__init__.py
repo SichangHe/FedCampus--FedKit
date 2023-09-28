@@ -10,6 +10,7 @@ def build_model():
             k.layers.Dense(units=512, activation="relu", input_dim=in_dim)  # type: ignore
         )
 
+    model.add(k.layers.Dense(64, activation="relu"))
     model.add(k.layers.Dense(1))
     learning_rate = 0.0013826
     model.compile(
