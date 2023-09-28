@@ -238,7 +238,8 @@ class _MyAppState extends State<MyApp> {
 Future<int> deviceId() async => (await AppSetId().getIdentifier()).hashCode;
 
 Future<String> downloadDataSet() async {
-  const url = 'https://github.com/FedCampus/FedKit/files/12744347/pmdata.zip';
+  const url =
+      'https://gitlab.com/SichangHe/notes/uploads/9792c4b1e45dc2e22ef13e94149cc4a5/pmdata.zip';
   final tempDir = '${(await getApplicationDocumentsDirectory()).path}/pmdata/';
   final zipFile = File('$tempDir/pmdata.zip');
   if (!await zipFile.exists()) {
@@ -261,4 +262,4 @@ Future<String> downloadDataSet() async {
   return tempDir;
 }
 
-const dataType = 'MNIST_28x28x1';
+const dataType = 'PMData_7_1';
