@@ -1,11 +1,13 @@
 from .. import keras as k
 
+in_dim = 7
+
 
 def build_model():
     model = k.Sequential()
     for _ in range(2):
         model.add(
-            k.layers.Dense(units=512, activation="relu", input_dim=7)  # type: ignore
+            k.layers.Dense(units=512, activation="relu", input_dim=in_dim)  # type: ignore
         )
 
     model.add(k.layers.Dense(1))
